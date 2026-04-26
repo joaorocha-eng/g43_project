@@ -1,5 +1,5 @@
 from classes.gclass import Gclass
-from classes.Agency import Agency
+from classes.agency import Agency
 
 class Astronaut(Gclass):
     obj = dict()
@@ -11,7 +11,7 @@ class Astronaut(Gclass):
     des = ['Id','Name','Agency']
     def __init__(self, id, name, agency_id):
         super().__init__()
-        id = Astronaut.get_id(id)
+        id = Astronaut.get_id(float(id))
         self._id = id
         self._name = name
         self._agency_id = int(agency_id) if str(agency_id).isdigit() else agency_id
