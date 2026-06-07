@@ -17,6 +17,7 @@ def get_class_by_name(name):
     return Agency
 
 def index(db_path):
+    can_edit = (session.get("user") == "root")
  
     entity = request.args.get("entity", session.get("entity", "Agency"))
     session["entity"] = entity
@@ -39,7 +40,8 @@ def index(db_path):
             search_query="",
             agencies=[],
             missions=[],
-            current_id=None
+            current_id=None,
+            can_edit=can_edit
         )
 
     cls = get_class_by_name(entity)
@@ -49,6 +51,11 @@ def index(db_path):
     
     option = request.args.get("option")
     prev_option = session.get("prev_option", "")
+    
+    if not can_edit:
+        if option not in ["first", "previous", "next", "last", "select"]:
+            option = None
+        prev_option = ""
     
     if option == "edit":
         butshow, butedit = "disabled", "enabled"
@@ -239,5 +246,6 @@ def index(db_path):
         search_query=search_query,
         agencies=agencies_list,
         missions=missions_list,
-        current_id=obj.id if obj else None
+        current_id=obj.id if obj else None,
+        can_edit=can_edit
     )
