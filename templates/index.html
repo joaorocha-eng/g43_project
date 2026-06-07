@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Space Missions Database Explorer</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+    <div class="stars-bg"></div>
+    <div class="app-container">
+
+
+        <header class="app-header">
+            <div class="logo-wrapper">
+                <span class="pulse-dot"></span>
+                <h1>SPACE MISSIONS <span>EXPLORER</span></h1>
+            </div>
+            <p class="subtitle">System Database Control Panel & Registry</p>
+        </header>
+
+
+        <nav class="entity-tabs">
+            <a href="/?entity=Agency" class="tab-item {% if entity == 'Agency' %}active{% endif %}">
+                <span class="tab-label">Agencies</span>
+            </a>
+            <a href="/?entity=Mission" class="tab-item {% if entity == 'Mission' %}active{% endif %}">
+                <span class="tab-label">Missions</span>
+            </a>
+            <a href="/?entity=Astronaut" class="tab-item {% if entity == 'Astronaut' %}active{% endif %}">
+                <span class="tab-label">Astronauts</span>
+            </a>
+            <a href="/?entity=AgencyMission" class="tab-item {% if entity == 'AgencyMission' %}active{% endif %}">
+                <span class="tab-label">Participations</span>
+            </a>
+            <a href="/?entity=Analysis" class="tab-item {% if entity == 'Analysis' %}active{% endif %}">
+                <span class="tab-label">Analysis</span>
+            </a>
+        </nav>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash-alert alert-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% if entity == 'Analysis' %}
+        <div class="dashboard-container">
+
+            <div class="stats-grid">
+                <div class="stat-card glass-card">
+                    <div class="stat-label">Total Allocated Budget</div>
+                    <div class="stat-value">${{ stats.total_budget }}</div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-label">Average Budget / Mission</div>
+                    <div class="stat-value">${{ stats.avg_budget }}</div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-label">Total Agencies</div>
+                    <div class="stat-value">{{ stats.total_agencies }}</div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-label">Total Missions</div>
+                    <div class="stat-value">{{ stats.total_missions }}</div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-label">Total Astronauts</div>
+                    <div class="stat-value">{{ stats.total_astronauts }}</div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card glass-card">
+                    <h3>Agency Budget Analysis</h3>
+                    <img src="data:image/png;base64,{{ charts.budget_by_agency }}" alt="Budget by Space Agency"
+                        class="chart-img">
+                </div>
+                <div class="chart-card glass-card">
+                    <h3>Mission Category Distribution</h3>
+                    <img src="data:image/png;base64,{{ charts.missions_by_category }}" alt="Missions by Category"
+                        class="chart-img">
+                </div>
+                <div class="chart-card glass-card">
+                    <h3>Investment Trend Over Time</h3>
+                    <img src="data:image/png;base64,{{ charts.budget_over_time }}" alt="Budget Trend Over Time"
+                        class="chart-img">
+                </div>
+                <div class="chart-card glass-card">
+                    <h3>Astronaut Affiliation Count</h3>
+                    <img src="data:image/png;base64,{{ charts.astronauts_per_agency }}" alt="Astronauts per Agency"
+                        class="chart-img">
+                </div>
+            </div>
+        </div>
+        {% else %}
+
+        <main class="workspace-grid">
+
+
+            <section class="form-panel glass-card">
+                <div class="panel-header">
+                    <h2>Record Details: <span>{{ entity }}</span></h2>
+                    {% if butedit == 'enabled' %}
+                    <span class="badge badge-edit">EDITING MODE</span>
+                    {% else %}
+                    <span class="badge badge-view">VIEWING MODE</span>
+                    {% endif %}
+                </div>
+
+                <form id="recordForm" action="/?option=save" method="post" class="dynamic-form">
+
+                    {% if entity == 'Agency' %}
+
+                    <div class="form-group">
+                        <label for="id">Agency ID</label>
+                        <input type="text" id="id" name="id" value="{{ fields.id }}" readonly class="readonly-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Agency Name</label>
+                        <input type="text" id="name" name="name" value="{{ fields.name }}" {% if butedit !='enabled'
+                            %}readonly{% endif %} required placeholder="Enter agency name...">
+                    </div>
+                    <div class="form-group">
+                        <label for="start_date">Start Date</label>
+                        <input type="text" id="start_date" name="start_date" value="{{ fields.start_date }}" {% if
+                            butedit !='enabled' %}readonly{% endif %} required placeholder="YYYY-MM-DD">
+                        <small class="field-help">Date format: YYYY-MM-DD</small>
+                    </div>
+
+                    {% elif entity == 'Mission' %}
+
+                    <div class="form-group">
+                        <label for="id">Mission ID</label>
+                        <input type="text" id="id" name="id" value="{{ fields.id }}" readonly class="readonly-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Mission Name</label>
+                        <input type="text" id="name" name="name" value="{{ fields.name }}" {% if butedit !='enabled'
+                            %}readonly{% endif %} required placeholder="Enter mission name...">
+                    </div>
+                    <div class="form-group">
+                        <label for="mission_type">Mission Category</label>
+                        <input type="text" id="mission_type" name="mission_type" value="{{ fields.mission_type }}" {% if
+                            butedit !='enabled' %}readonly{% endif %} required placeholder="Enter mission category...">
+                    </div>
+
+                    {% elif entity == 'Astronaut' %}
+
+                    <div class="form-group">
+                        <label for="id">Astronaut ID</label>
+                        <input type="text" id="id" name="id" value="{{ fields.id }}" readonly class="readonly-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Astronaut Name</label>
+                        <input type="text" id="name" name="name" value="{{ fields.name }}" {% if butedit !='enabled'
+                            %}readonly{% endif %} required placeholder="Enter astronaut name...">
+                    </div>
+                    <div class="form-group">
+                        <label for="agency_id">Affiliated Agency</label>
+                        {% if butedit == 'enabled' %}
+                        <select id="agency_id" name="agency_id" required>
+                            <option value="" disabled selected>-- Select an Agency --</option>
+                            {% for ag in agencies %}
+                            <option value="{{ ag.id }}" {% if fields.agency_id==ag.id %}selected{% endif %}>
+                                {{ ag.name }} (ID: {{ ag.id }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <input type="hidden" id="agency_id" name="agency_id" value="{{ fields.agency_id }}">
+                        {% set ns = namespace(active_agency_name="Unknown Agency") %}
+                        {% for ag in agencies %}
+                        {% if ag.id|string == fields.agency_id|string %}
+                        {% set ns.active_agency_name = ag.name %}
+                        {% endif %}
+                        {% endfor %}
+                        <input type="text" readonly value="{{ ns.active_agency_name }} (ID: {{ fields.agency_id }})"
+                            class="readonly-input">
+                        {% endif %}
+                    </div>
+
+                    {% elif entity == 'AgencyMission' %}
+
+                    <div class="form-group">
+                        <label for="id">Composite Key ID</label>
+                        <input type="text" id="id" name="id" value="{{ fields.id }}" readonly class="readonly-input"
+                            placeholder="agency_mission_date">
+                    </div>
+                    <div class="form-group">
+                        <label for="agency_id">Agency Partner</label>
+                        {% if butedit == 'enabled' %}
+                        <select id="agency_id" name="agency_id" required>
+                            <option value="" disabled selected>-- Select an Agency --</option>
+                            {% for ag in agencies %}
+                            <option value="{{ ag.id }}" {% if fields.agency_id==ag.id %}selected{% endif %}>
+                                {{ ag.name }} (ID: {{ ag.id }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <input type="hidden" id="agency_id" name="agency_id" value="{{ fields.agency_id }}">
+                        {% set ns_agency = namespace(active_agency_name="Unknown Agency") %}
+                        {% for ag in agencies %}
+                        {% if ag.id|string == fields.agency_id|string %}
+                        {% set ns_agency.active_agency_name = ag.name %}
+                        {% endif %}
+                        {% endfor %}
+                        <input type="text" readonly value="{{ ns_agency.active_agency_name }} (ID: {{ fields.agency_id }})"
+                            class="readonly-input">
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="mission_id">Assigned Mission</label>
+                        {% if butedit == 'enabled' %}
+                        <select id="mission_id" name="mission_id" required>
+                            <option value="" disabled selected>-- Select a Mission --</option>
+                            {% for ms in missions %}
+                            <option value="{{ ms.id }}" {% if fields.mission_id==ms.id %}selected{% endif %}>
+                                {{ ms.name }} (ID: {{ ms.id }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <input type="hidden" id="mission_id" name="mission_id" value="{{ fields.mission_id }}">
+                        {% set ns_mission = namespace(active_mission_name="Unknown Mission") %}
+                        {% for ms in missions %}
+                        {% if ms.id|string == fields.mission_id|string %}
+                        {% set ns_mission.active_mission_name = ms.name %}
+                        {% endif %}
+                        {% endfor %}
+                        <input type="text" readonly value="{{ ns_mission.active_mission_name }} (ID: {{ fields.mission_id }})"
+                            class="readonly-input">
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="transaction_date">Transaction Date</label>
+                        <input type="text" id="transaction_date" name="transaction_date"
+                            value="{{ fields.transaction_date }}" {% if butedit !='enabled' %}readonly{% endif %}
+                            required placeholder="YYYY-MM-DD">
+                        <small class="field-help">Date of financial/mission execution</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Budget Allocation ($)</label>
+                        <input type="number" id="amount" name="amount" value="{{ fields.amount }}" {% if butedit
+                            !='enabled' %}readonly{% endif %} required placeholder="Enter budget allocation amount...">
+                    </div>
+                    {% endif %}
+
+
+                    <div class="actions-wrapper">
+                        {% if butedit == 'disabled' %}
+                        <button id="edit" type="button" class="btn btn-primary"
+                            onclick="window.location.href = '/?option=edit'">Edit Record</button>
+                        <button id="delete" type="button" class="btn btn-danger"
+                            onclick="if(confirm('Are you sure you want to delete this record?')) window.location.href = '/?option=delete'">Delete</button>
+                        <button id="insert" type="button" class="btn btn-secondary"
+                            onclick="window.location.href = '/?option=insert'">Insert New</button>
+                        {% else %}
+                        <button id="save" type="submit" class="btn btn-success">Save Record</button>
+                        <button id="cancel" type="button" class="btn btn-secondary"
+                            onclick="window.location.href = '/?option=cancel'">Cancel</button>
+                        {% endif %}
+                    </div>
+
+
+                    <div class="navigation-wrapper">
+                        <button id="first" type="button" {% if butshow !='enabled' %}disabled{% endif %}
+                            onclick="window.location.href = '/?option=first'" class="nav-btn">First</button>
+                        <button id="previous" type="button" {% if butshow !='enabled' %}disabled{% endif %}
+                            onclick="window.location.href = '/?option=previous'" class="nav-btn">Prev</button>
+                        <button id="next" type="button" {% if butshow !='enabled' %}disabled{% endif %}
+                            onclick="window.location.href = '/?option=next'" class="nav-btn">Next</button>
+                        <button id="last" type="button" {% if butshow !='enabled' %}disabled{% endif %}
+                            onclick="window.location.href = '/?option=last'" class="nav-btn">Last</button>
+                    </div>
+
+                </form>
+            </section>
+
+            <section class="browser-panel glass-card">
+                <div class="panel-header">
+                    <h2>Database Registry</h2>
+                </div>
+
+                <form action="/" method="get" class="search-form">
+                    <input type="hidden" name="entity" value="{{ entity }}">
+                    <input type="text" name="search" value="{{ search_query }}" placeholder="Filter Registry..."
+                        class="search-input">
+                    <button type="submit" class="search-btn">Filter</button>
+                    {% if search_query %}
+                    <a href="/?entity={{ entity }}" class="clear-btn">Clear</a>
+                    {% endif %}
+                </form>
+
+                <div class="record-table-wrapper">
+                    <table class="record-table">
+                        <thead>
+                            <tr>
+                                <th>Registry Record</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if records %}
+                            {% for item in records %}
+                            <tr class="{% if item.id == current_id %}active-row{% endif %}">
+                                <td class="record-label-cell">{{ item.label }}</td>
+                                <td class="record-action-cell">
+                                    <a href="/?entity={{ entity }}&option=select&id={{ item.id }}"
+                                        class="select-row-btn">Select</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="2" class="empty-table-cell">No matching registry records found.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+        {% endif %}
+
+        <footer class="app-footer">
+        </footer>
+    </div>
+</body>
+
+</html>
