@@ -44,6 +44,19 @@
             <a href="/?entity=Analysis" class="tab-item {% if entity == 'Analysis' %}active{% endif %}">
                 <span class="tab-label">Analysis</span>
             </a>
+            {% set ulogin_val = ulogin if ulogin is defined and ulogin is not none else session.get('user') %}
+            {% if ulogin_val == None %}
+            <a href="/login" class="tab-item">
+                <span class="tab-label">Login</span>
+            </a>
+            {% else %}
+            <a href="/Userlogin" class="tab-item {% if entity == 'Userlogin' %}active{% endif %}">
+                <span class="tab-label">Users</span>
+            </a>
+            <a href="/logoff" class="tab-item">
+                <span class="tab-label">Logoff ({{ ulogin_val }})</span>
+            </a>
+            {% endif %}
         </nav>
 
 
@@ -263,18 +276,20 @@
                     {% endif %}
 
 
-                    <div class="actions-wrapper">
-                        {% if butedit == 'disabled' %}
-                        <button id="edit" type="button" class="btn btn-primary"
-                            onclick="window.location.href = '/?option=edit'">Edit Record</button>
-                        <button id="delete" type="button" class="btn btn-danger"
-                            onclick="if(confirm('Are you sure you want to delete this record?')) window.location.href = '/?option=delete'">Delete</button>
-                        <button id="insert" type="button" class="btn btn-secondary"
-                            onclick="window.location.href = '/?option=insert'">Insert New</button>
-                        {% else %}
-                        <button id="save" type="submit" class="btn btn-success">Save Record</button>
-                        <button id="cancel" type="button" class="btn btn-secondary"
-                            onclick="window.location.href = '/?option=cancel'">Cancel</button>
+                     <div class="actions-wrapper">
+                        {% if can_edit %}
+                            {% if butedit == 'disabled' %}
+                            <button id="edit" type="button" class="btn btn-primary"
+                                onclick="window.location.href = '/?option=edit'">Edit Record</button>
+                            <button id="delete" type="button" class="btn btn-danger"
+                                onclick="if(confirm('Are you sure you want to delete this record?')) window.location.href = '/?option=delete'">Delete</button>
+                            <button id="insert" type="button" class="btn btn-secondary"
+                                onclick="window.location.href = '/?option=insert'">Insert New</button>
+                            {% else %}
+                            <button id="save" type="submit" class="btn btn-success">Save Record</button>
+                            <button id="cancel" type="button" class="btn btn-secondary"
+                                onclick="window.location.href = '/?option=cancel'">Cancel</button>
+                            {% endif %}
                         {% endif %}
                     </div>
 

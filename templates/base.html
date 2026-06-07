@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Space Missions Database Explorer</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    {% block title %}
+    {% endblock %}
+</head>
+
+<body>
+    <div class="stars-bg"></div>
+    <div class="app-container">
+
+        <header class="app-header">
+            <div class="logo-wrapper">
+                <span class="pulse-dot"></span>
+                <h1>SPACE MISSIONS <span>EXPLORER</span></h1>
+            </div>
+            <p class="subtitle">System Database Control Panel & Registry</p>
+        </header>
+
+        <nav class="entity-tabs">
+            {% set ulogin_val = ulogin if ulogin is defined and ulogin is not none else session.get('user') %}
+            {% if ulogin_val == None %}
+            <a class="tab-item" style="opacity: 0.4; pointer-events: none; cursor: not-allowed;">
+                <span class="tab-label">Agencies</span>
+            </a>
+            <a class="tab-item" style="opacity: 0.4; pointer-events: none; cursor: not-allowed;">
+                <span class="tab-label">Missions</span>
+            </a>
+            <a class="tab-item" style="opacity: 0.4; pointer-events: none; cursor: not-allowed;">
+                <span class="tab-label">Astronauts</span>
+            </a>
+            <a class="tab-item" style="opacity: 0.4; pointer-events: none; cursor: not-allowed;">
+                <span class="tab-label">Participations</span>
+            </a>
+            <a class="tab-item" style="opacity: 0.4; pointer-events: none; cursor: not-allowed;">
+                <span class="tab-label">Analysis</span>
+            </a>
+            <a href="/login" class="tab-item active">
+                <span class="tab-label">Login</span>
+            </a>
+            {% else %}
+            <a href="/?entity=Agency"
+                class="tab-item {% if request.args.get('entity') == 'Agency' or (request.path == '/' and not request.args.get('entity') and request.endpoint == 'index') %}active{% endif %}">
+                <span class="tab-label">Agencies</span>
+            </a>
+            <a href="/?entity=Mission"
+                class="tab-item {% if request.args.get('entity') == 'Mission' %}active{% endif %}">
+                <span class="tab-label">Missions</span>
+            </a>
+            <a href="/?entity=Astronaut"
+                class="tab-item {% if request.args.get('entity') == 'Astronaut' %}active{% endif %}">
+                <span class="tab-label">Astronauts</span>
+            </a>
+            <a href="/?entity=AgencyMission"
+                class="tab-item {% if request.args.get('entity') == 'AgencyMission' %}active{% endif %}">
+                <span class="tab-label">Participations</span>
+            </a>
+            <a href="/?entity=Analysis"
+                class="tab-item {% if request.args.get('entity') == 'Analysis' %}active{% endif %}">
+                <span class="tab-label">Analysis</span>
+            </a>
+            <a href="/Userlogin" class="tab-item {% if request.path == '/Userlogin' %}active{% endif %}">
+                <span class="tab-label">Users</span>
+            </a>
+            <a href="/logoff" class="tab-item">
+                <span class="tab-label">Logoff ({{ ulogin_val }})</span>
+            </a>
+            {% endif %}
+        </nav>
+
+        {% block content %}
+        {% endblock %}
+
+        <footer class="app-footer">
+        </footer>
+    </div>
+</body>
+
+</html>

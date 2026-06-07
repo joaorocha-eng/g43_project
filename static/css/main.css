@@ -645,3 +645,153 @@ body {
         transform: translateY(0);
     }
 }
+
+/* Styling for Login and Userlogin views */
+.dados {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: 16px;
+    padding: 2.5rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    max-width: 550px;
+    margin: 2rem auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.dados h1 {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    text-transform: uppercase;
+    font-size: 1.75rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+}
+
+.dados form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: stretch;
+    text-align: left;
+}
+
+.dados label {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: -0.75rem;
+}
+
+.dados input[type="text"],
+.dados input[type="password"] {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-glass);
+    border-radius: 8px;
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    outline: none;
+    transition: var(--transition-smooth);
+    width: 100%;
+}
+
+.dados input:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 8px var(--accent-cyan-glow);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.dados input:disabled {
+    background: rgba(0, 0, 0, 0.25);
+    border-color: transparent;
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.button1 {
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-blue);
+    color: white;
+    margin: 0.25rem;
+}
+
+.button1:hover:not(:disabled) {
+    background: var(--accent-blue-hover);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+
+.button1:disabled {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-muted);
+    border: 1px solid var(--border-glass);
+    cursor: not-allowed;
+}
+
+/* Specific buttons styled to match dashboard actions */
+#delete.button1 {
+    background: var(--accent-danger);
+}
+#delete.button1:hover:not(:disabled) {
+    background: var(--accent-danger-hover);
+    box-shadow: 0 0 10px var(--accent-danger-glow);
+}
+
+#save.button1 {
+    background: var(--accent-success);
+}
+#save.button1:hover:not(:disabled) {
+    background: var(--accent-success-hover);
+    box-shadow: 0 0 10px var(--accent-success-glow);
+}
+
+#exit.button1, #cancel.button1 {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    border: 1px solid var(--border-glass);
+}
+#exit.button1:hover, #cancel.button1:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+#first.button1, #previous.button1, #next.button1, #last.button1 {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-glass);
+    color: var(--text-primary);
+}
+#first.button1:hover:not(:disabled),
+#previous.button1:hover:not(:disabled),
+#next.button1:hover:not(:disabled),
+#last.button1:hover:not(:disabled) {
+    background: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    color: #000;
+    box-shadow: 0 0 8px var(--accent-cyan-glow);
+}
+
+/* Hide the Userlogin image in the Users view */
+.dados img[alt="userlogin"] {
+    display: none;
+}
