@@ -67,4 +67,4 @@ def userlogin():
 if __name__ == '__main__':
     import os
     port = int(os.environ.get("PORT", 5050))
-    app.run(debug=True, port=port)
+    app.run(port=port)
